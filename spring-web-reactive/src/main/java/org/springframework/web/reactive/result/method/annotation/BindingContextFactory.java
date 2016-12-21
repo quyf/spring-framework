@@ -145,11 +145,11 @@ class BindingContextFactory {
 		}
 
 		ResolvableType type = result.getReturnType();
-		ReactiveAdapter adapter = getAdapterRegistry().getAdapterFrom(type.getRawClass(), value);
+		ReactiveAdapter adapter = getAdapterRegistry().getAdapter(type.getRawClass(), value);
 		Class<?> valueType = (adapter != null ? type.resolveGeneric(0) : type.resolve());
 
 		if (Void.class.equals(valueType) || void.class.equals(valueType)) {
-			return (adapter != null ? adapter.toMono(value) : Mono.empty());
+			return (adapter != null ? Mono.from(adapter.toPublisher(value)) : Mono.empty());
 		}
 
 		String name = getAttributeName(valueType, result.getReturnTypeSource());
